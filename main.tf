@@ -41,6 +41,7 @@ resource "aws_s3_bucket" "www-bucket" {
   }
 }
 
+# setup www bucket to host static web site
 resource "aws_s3_bucket_website_configuration" "s3-www-config" {
   bucket = aws_s3_bucket.www-bucket.bucket
   index_document {
@@ -48,5 +49,28 @@ resource "aws_s3_bucket_website_configuration" "s3-www-config" {
   }
   error_document {
     key = "error.html"
+  }
+}
+
+resource "aws_s3_bucket_policy" "allow_public_access_bucket_policy" {
+  bucket = aws_s3_bucket.www-bucket.id
+  policy = data.aws_iam_policy_document.allow_public_access_doc.json
+}
+
+data "aws_iam_policy_document" "allow_public_access_doc" {
+  statement {
+    principals {
+      type = "AWS"
+      identifiers = ["*"]
+    }
+
+    actions = [
+      "s3:GetObject"
+    ]
+
+    resources = [
+      aws_s3_bucket.www-bucket.arn,
+      "${aws_s3_bucket.www-bucket.arn}/*"
+    ]
   }
 }
