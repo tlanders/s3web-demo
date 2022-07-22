@@ -15,6 +15,18 @@ provider "aws" {
   region = "us-east-1"
 }
 
+resource "aws_route53_zone" "demo-zone" {
+  name = "demo.lcidev.com"
+}
+
+#resource "aws_route53_record" "demo-zone-ns" {
+  #zone_id = aws_route53_zone.demo-zone.zone_id
+  #name    = "demo.lcidev.com"
+  #type    = "NS"
+  #ttl     = "30"
+  #records = aws_route53_zone.demo-zone.name_servers
+#}
+
 # resource to create redirect s3 bucket
 resource "aws_s3_bucket" "redirect-bucket" {
   bucket = "lci-demo-bucket"
